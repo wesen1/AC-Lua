@@ -1,0 +1,38 @@
+CXX = g++
+CXXFLAGS = -O2 -Wall
+LD = $(CXX)
+LDFLAGS = -s
+RMDIR = rmdir /S /Q
+MKDIR = mkdir
+STRIP = strip --strip-unneeded
+
+INC = -Ienet/include -Iinclude
+DEF = -DSTANDALONE
+LIBS = -Llib -lzdll -lenet -lws2_32 -lwinmm -llua -llanes
+ODIR = server_out
+SDIR = src
+
+
+
+O =		crypto.o log.o protocol.o serverms.o server.o stream.o tools.o wizard.o \
+		lua.o lua_tmr_library.o lua_cfg_library.o
+O := $(addprefix $(ODIR)/, $(O))
+OUT = $(ODIR)/ac_server.exe
+
+
+.PHONY: default clean
+
+default: $(ODIR) $(OUT)
+
+$(ODIR):
+	$(MKDIR) $@
+
+$(O): $(ODIR)/%.o: $(SDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $(INC) $(DEF) -c -o $@ $<
+
+$(OUT): $(O)
+	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(STRIP) $@
+
+clean:
+	$(RMDIR) $(ODIR)

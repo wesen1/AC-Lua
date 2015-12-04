@@ -1,0 +1,389 @@
+[?]
+
+1)
+  if ( !fromLua && Lua::callHandler( LUA_ON_PLAYER_GET_DAMAGE, "iii", actor->clientnum, target->clientnum, damage ) == Lua::PLUGIN_BLOCK ) return;
+
+  if ( !fromLua && Lua::callHandler( LUA_ON_PLAYER_GET_DAMAGE, "iiiib", actor->clientnum, target->clientnum, damage, gun, gib ) == Lua::PLUGIN_BLOCK ) return;
+
+
+2)
+  if ( !fromLua ) Lua::callHandler( LUA_ON_PLAYER_DISCONNECT, "i", n );
+
+  if ( !fromLua ) Lua::callHandler( LUA_ON_PLAYER_DISCONNECT, "ii", n, reason );
+
+
+3)
+
+onLuaNotice
++
+luanotice
+
+
+
+[2 june 2012]           v1.2
+
+TODO {
+        [OK] onPlayerSayVoice() B
+        [OK] getmapitems() && spawnitem() && onItemSpawn() && onItemRespawn()
+        [OK] ban(cn,time)
+        [OK] onPlayerWeaponChange()
+        [OK] onPlayerNameChange()
+        [OK] getnextmode()
+        [OK] getnextmap()
+        [OK] removebans()
+        [OK] getscore()
+        [OK] setscore()
+        [OK] onPlayerRoleChange()
+        [fixed] setadminpwd
+        [OK] getadminpwd()
+        [OK] onPlayerRoleChangeTry()
+        [OK] LUA_ON_PLAYER_DEATH     B
+        [OK] getadminpwds
+        [OK] onMaprotRead(), onPasswordsRead()
+        [OK] setwholemaprot(), getwholemaprot()
+};
+
+
+
+
+[6 jul 2012]           v1.3
+
+
++ onLogLine
++ server hitreg patch
++ onPlayerWeaponReload
+
+  LUA_SET_FUNCTION (setsockettype);
+  LUA_SET_FUNCTION (addclient);
+  LUA_SET_FUNCTION (initclient);
+  LUA_SET_FUNCTION (delclient);
+  LUA_SET_FUNCTION (sethostname);
+  LUA_SET_FUNCTION (sayas);
+  LUA_SET_FUNCTION (voiceas);
+
+  cfg lib fix
+
+  lanes-lib
+
+
+
+
+
+                                        v1.4:
+
+[22 jul 2012]
+
+
+  onVoteEnd         B
+
+[15 aug 2012]
+
+  удаление таймера при тике (tmr)
+  getvelocity fixed
+  setping
+  setangle
+  vote error константы
+  voteend    ------>    voteend   B
+  clientprint exclude arg
+  getbans
+  removeban
+
+
+
+[25 aug 2012]
+
+  в setwholemaprot  добавлены значения по умолчанию
+  getmaprotnexttimeleft
+  getmaprotnextentry
+  onPlayerSpawnClientSide
+  LUA_ON_PLAYER_SWITCH_SPECT_CN
+  LUA_ON_PLAYER_SUICIDE                 B
+  LUA_FUNCTION (getspawnmillis)
+  onPlayerSayText(int acn, str text)         -->     onPlayerSayText(int acn, str text, bool team, bool me)
+  LUA_ON_PLAYER_VOTE
+  getcla() getrvsf() getplayers() getspect() generators
+  LUA_ON_PLAYER_SEND_MAP                B
+  yieldServerOperator   генератор
+  LUA_FUNCTION (logline)
+  LUA_SET_FUNCTION (setmaprotnextentry);
+  LUA_SET_FUNCTION (setmaprotnextmap);
+  LUA_SET_FUNCTION (setmaprotnextmode);
+  LUA_SET_FUNCTION (setmaprotnexttimeleft);
+  LUA_SET_FUNCTION (getreloadtime);
+  LUA_SET_FUNCTION (getattackdelay);
+  LUA_SET_FUNCTION (getmagsize);
+  LUA_ON_PLAYER_ROLE_CHANGE_TRY       + аргумент hash
+  LUA_ON_PLAYER_ROLE_CHANGE            + аргумент hash
+  getsessionid
+  LUA_ON_PLAYER_DEATH_AFTER
+  "onPlayerSpawnAfter"
+  LUA_ON_PLAYER_GET_DAMAGE_AFTER
+  #define LUA_ON_PLAYER_TEAM_CHANGE_AFTER "onPlayerTeamChangeAfter" // (int actor_cn, int old_team)
+  #define LUA_ON_SERVER_PROCESS_AFTER "onServerProcessAfter" // (int sender_cn, int channel, int type)
+  #define LUA_ON_PLAYER_ITEM_PICKUP_AFTER "onPlayerItemPickupAfter" // (int actor_cn, int item_type, int item_id)
+  #define LUA_ON_PLAYER_SAY_TEXT_AFTER "onPlayerSayTextAfter" // (int sender_cn, string message)
+  #define LUA_ON_PLAYER_ROLE_CHANGE_AFTER "onPlayerRoleChangeAfter" // (int actor_cn, int old_role, string hash, int adminpwd_line)
+  #define LUA_ON_ITEM_RESPAWN_AFTER "onItemRespawnAfter" // (int item_id, int item_type)
+  #define LUA_ON_ITEM_SPAWN_AFTER "onItemSpawnAfter" // (int item_id, int item_type)
+  #define LUA_ON_PLAYER_SAY_VOICE_AFTER "onPlayerSayVoiceAfter" // (int actor_cn, int sound)
+  #define LUA_ON_VOTE_END_AFTER "onVoteEndAfter" // (int result, int owner_cn, int type, string text, int number)
+  #define LUA_ON_PLAYER_SEND_MAP_AFTER "onPlayerSendMapAfter" // (string map_name, int revision, int mapsize, int cfgsize, int cfgsizegz)
+  setscoping setcrouching
+  LUA_FUNCTION (shootas)
+  LUA_FUNCTION (reloadas)
+    for var in cfg.allVariables(file)
+
+[4 oct 2012]
+
+tmr.create(... , ..., функция)
+походу, пофиксил редкое появление SEGFAULT [cfg: line.erase( line.end() )]
+
+
+
+[1 dec 2012]
+
+bool    cfg.exists(filename)
+table   cfg.totable(filename)
+void    cfg.fromtable(filename, table)
+LUA_ON_WHOIS                B
+LUA_ON_WHOIS_AFTER
+                                                !!! *_AFTER-обработчики не вызываются при return PLUGIN_BLOCK (исключение: onVoteEndAfter)
+LUA_ON_PLAYER_DISCONNECT_AFTER
+getservermaps         ->         getservermaps(bool includingOfficial)
+LUA_FUNCTION (removemap);
+LUA_FUNCTION (mapisok)
+
+[8 dec 2012]
+
+LUA_FUNCTION (mapexists)
+LUA_ON_PLAYER_ROLE_CHANGE_TRY  + bool player_is_connecting
+LUA_ON_PLAYER_ROLE_CHANGE      + bool player_is_connecting
+LUA_ON_PLAYER_ROLE_CHANGE_AFTER + bool player_is_connecting
+LUA_ON_LOOP_AFTER
+static LUA_FUNCTION (isonladder); // (int player_cn)
+static LUA_FUNCTION (isscoping); // (int player_cn)
+static LUA_FUNCTION (iscrouching); // (int player_cn)
+LUA_FUNCTION (voteas)
+#define LUA_ON_NOTICE "onLuaNotice" // (obj message, string target)
+luanotice(obj message, string target)
+
+[9 dec 2012]
+
+static LUA_FUNCTION (getitempos); // (int item_id)
+LUA_FUNCTION (isitemspawned)
+function slice(array, S, E)     ac_server.inc
+function team_isactive(team)    ac_server.inc
+function team_isspect(team)     ac_server.inc
+  LUA_SET_FUNCTION (isitemspawned);
+  LUA_SET_FUNCTION (setstate);
+  LUA_SET_FUNCTION (sendspawn);
+
+    // force-team reasons
+  LUA_SET_CONSTANT (FTR_INFO);
+  LUA_SET_CONSTANT (FTR_PLAYERWISH);
+  LUA_SET_CONSTANT (FTR_AUTOTEAM);
+  LUA_SET_CONSTANT (FTR_SILENTFORCE);
+
+#define LUA_ON_PLAYER_TEAM_CHANGE "onPlayerTeamChange" // (int actor_cn, int new_team, int forceteam_reason)
+#define LUA_ON_PLAYER_TEAM_CHANGE_AFTER "onPlayerTeamChangeAfter" // (int actor_cn, int old_team, int forceteam_reason)
+
+onPlayerTeamChange    B2   то есть обработчик возвращает не одно (B), а два значения: первое - PLUGIN_BLOCK (или ничего),
+второе - результат (true/false или ничего), с которым завершится действие, если оно прервано с помощью PLUGIN_BLOCK
+
+LUA_SET_FUNCTION (clienthasflag);
+#define LUA_ON_PLAYER_SHOOT_AFTER "onPlayerShootAfter" // (int actor_cn, int gun)
+setteam(cn, new_team) --> setteam(cn, new_team,  forceteam_reason = FTR_INFO)
+
+
+
+
+[22 dec 2012]
+LUA_FUNCTION (getmappath)
+LUA_FUNCTION (getvote)
+
+
+
+
+[3 jan 2013]
+LUA_FUNCTION (getpushfactor)
+yieldCanSpeech   (int cn, string text, bool canSpeech)      -->  bool
+yieldIsSpamDetected (int cn, string text, bool spamDetected)   --> bool
+#define LUA_YIELD_IS_BLACKLISTED
+#define LUA_YIELD_IS_BANNED
+  LUA_SET_CONSTANTN ("VOTEE_NOERROR", -1);
+#define LUA_ON_PLAYER_CALL_VOTE "onPlayerCallVote" // = int (vote error); (int actor_cn, int type, string text, int number, int (vote error))
+
+
+[7 jan 2013]
+
+  LUA_SET_FUNCTION (genpwdhash);
+  LUA_SET_FUNCTION (addms);
+  LUA_SET_FUNCTION (updatems);
+  LUA_SET_FUNCTION (getmasterserver);
+  LUA_SET_FUNCTION (getmasterservers);
+  LUA_SET_FUNCTION (removems);
+  LUA_SET_FUNCTION (getspectcn);
+  LUA_SET_FUNCTION (getacversion);
+  LUA_SET_FUNCTION (getacbuildtype);
+  LUA_SET_FUNCTION (getconnectmillis);
+  LUA_SET_FUNCTION (gettotalsent);
+  LUA_SET_FUNCTION (gettotalreceived);
+  LUA_SET_FUNCTION (cleargbans);
+  LUA_SET_FUNCTION (addgban);
+  LUA_SET_FUNCTION (checkgban);
+
+
+
+[13 jan 2013]
+
+исправил модуль tmr  (не обновлялось новое время вызова таймера)
+
+
+
+
+      [1.5]
+
+
+[17 jan 2013]
+
+исправил getfakevariable (segfaults)
+
+#define LUA_ON_PLAYER_PING_UPDATE "onPlayerPingUpdate" // (int player_cn, int old_ping)
+#define LUA_ON_PLAYER_STATE_UPDATE "onPlayerStateUpdate" // (int player_cn)
+#define LUA_ON_PLAYER_SHOOT "onPlayerShoot" // (int actor_cn, int gun, table to)
+#define LUA_ON_PLAYER_SHOOT_AFTER "onPlayerShootAfter" // (int actor_cn, int gun, table to)
+#define LUA_ON_PLAYER_BAN_THRESHOLD_REACH "onPlayerBanThresholdReach" // (int actor_cn)               B
+#define LUA_ON_PLAYER_KICK_THRESHOLD_REACH "onPlayerKickThresholdReach" // (int actor_cn)             B
+
+  LUA_SET_FUNCTION (getteamkills);
+  LUA_SET_FUNCTION (setteamkills);
+  LUA_SET_FUNCTION (rereadcfgs);
+
+
+[31 Jan 2013]
+
+B     #define LUA_ON_CONFIG_REREAD "onConfigReread" // ()
+#define LUA_ON_CONFIG_REREAD_AFTER "onConfigRereadAfter" // ()
+
+  LUA_SET_CONSTANTN ("UE_IGNORE", -2);
+  LUA_SET_CONSTANT (UE_NOERROR);
+  LUA_SET_CONSTANT (UE_READONLY);
+  LUA_SET_CONSTANT (UE_LIMITACHIEVED);
+  LUA_SET_CONSTANT (UE_NOUPLOADPERMISSION);
+  LUA_SET_CONSTANT (UE_NOUPDATEPERMISSION);
+  LUA_SET_CONSTANT (UE_NOREVERTPERMISSION);
+
+#define LUA_ON_PLAYER_SEND_MAP "onPlayerSendMap" // (string map_name, int sender_cn, int revision, int mapsize, int cfgsize, int cfgsizegz, int upload_error)
+#define LUA_ON_PLAYER_SEND_MAP_AFTER "onPlayerSendMapAfter" // (string map_name, int sender_cn, int revision, int mapsize, int cfgsize, int cfgsizegz)
+
+  LUA_SET_CONSTANTN ("RE_IGNORE", -2);
+  LUA_SET_CONSTANT (RE_NOERROR);
+  LUA_SET_CONSTANT (RE_NOPERMISSION);
+  LUA_SET_CONSTANT (RE_READONLY);
+  LUA_SET_CONSTANT (RE_NOTFOUND);
+
+#define LUA_ON_PLAYER_REMOVE_MAP "onPlayerRemoveMap" // (string map_name, int sender_cn, int remove_error)
+#define LUA_ON_PLAYER_REMOVE_MAP "onPlayerRemoveMapAfter" // (string map_name, int sender_cn, int remove_error)
+
+
+B    #define LUA_ON_SERVER_PROCESS "onServerProcess" // (int sender_cn, int channel, int type)
+               ---------->
+     #define LUA_ON_SERVER_PROCESS "onServerProcess" // (int sender_cn, int channel, int type)
+
+tmr.
+  { "after", tmr_after },
+  { "vacantid", tmr_vacantid },
+
+LUA_FUNCTION (include)  включает .inc, .lua и .luac
+#define LUA_ON_PLAYER_PRECONNECT "onPlayerPreconnect" // (int actor_cn)
+fixed /setnext MODE MAP voteas
+#define LUA_YIELD_NUMBER_OF_PLAYERS "yieldNumberOfPlayers" // = int (number of online players); (int players)
+
+
+
+[10 feb 2013]
+
+  LUA_SET_FUNCTION (callhandler);
+  LUA_SET_FUNCTION (isediting);
+  LUA_SET_FUNCTION (isalive);
+  static LUA_FUNCTION (mapisok); // (string mapname)
+      ---------------------->
+  static LUA_FUNCTION (mapisok); // (string mapname = current map)
+  LUA_SET_FUNCTION (getwaterlevel);
+  LUA_SET_FUNCTION (isinwater);
+  LUA_FUNCTION (isunderwater);
+  LUA_FUNCTION (callgenerator)
+
+[17 feb 2013]
+  #define LUA_ON_PLAYER_SWITCH_EDITING "onPlayerSwitchEditing" // (int actor_cn, bool is_editing)
+
+
+
+
+                                                                -- Версия 1.6 --
+                                                    Портирование мода на AC 1.2.0.2, исправление
+                                                  багов, имевших место в версии 1.5, добавление фич.
+
+(!) коммент, стартующий со знаков /// <=> взять под контроль
+
+(ok) портировал:
+crypto.cpp
+log.cpp
+protos.h
+server.cpp
+server.h
+server.h.cpp
+serveractions.h
+serverevents.h
+serverfiles.h
+serverms.cpp
+
+(ok) поменять LUA_YIELD_IS_BANNED на другое имя функции
+(ok) прописать константы BAN_NONE, ...
+(ok) проверить возможность сохранения LUA_ON_PLAYER_SWITCH_SPECT_CN
+(ok) onAkimbo
+(ok) проверить возможность сохранения SV_WHOIS
+(ok) переместить lua::reload чуть ниже, чтобы отлавливался в Lua
+(ok) getlastsay(player)
+(ok) yieldDefaultTimeLimit
+
+(ok) осталось проверить обработчики и их параметры, потом сделать всё задуманное, исправить ошибки
+
++ LUA_YIELD_IS_BANNED(ip, isbanned) --> LUA_YIELD_IS_BANNED(ip, ban_type)
++ LUA_ON_VOTE_END, LUA_ON_VOTE_END_AFTER --> (result, owner, type, text, num1, num2)
++ LUA_ON_PLAYER_CALL_VOTE --> (v->owner, v->type, v->text, v->num1, v->num2, error)
++ LUA_YIELD_CAN_SPAWN
+- LUA_ON_PLAYER_SWITCH_SPECT_CN
+- LUA_ON_WHOIS
+- LUA_ON_WHOIS_AFTER
++ LUA_ON_PLAYER_GET_AKIMBO
++ LUA_ON_EXTENSION теперь [B]
++ getlastsaytext
++ getlastsay
++ ban --> принимает ban(cn, time, type)
++ getbans --> возвращаает { [1] = ...; [2] = ...; [3] = ban_type; }
++ LUA_ON_PLAYER_DISCONNECT теперь [B]
++ authclient
++ исправил settimeleft, settimeleftmillis
++ isauthed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

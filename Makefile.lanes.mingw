@@ -1,0 +1,43 @@
+CC = gcc
+CFLAGS = -O2 -Wall -fPIC
+LD = $(CC) -shared
+LDFLAGS = -s
+AR = ar rcu
+RANLIB = ranlib
+STRIP = strip --strip-unneeded
+RMDIR = rmdir /S /Q
+MKDIR = mkdir
+
+INC = -Ilua/src
+DEF = -DNDEBUG
+LIBS = -Llib -llua
+ODIR = lanes_out
+SDIR = lanes/src
+
+
+O = lanes.o threading.o tools.o keeper.o
+O := $(addprefix $(ODIR)/, $(O))
+A = $(ODIR)/liblanes.a
+OUT = $(ODIR)/lanes.dll
+
+
+.PHONY: default clean
+
+default: $(ODIR) $(A) $(OUT)
+
+$(ODIR):
+	$(MKDIR) $@
+
+$(O): $(ODIR)/%.o: $(SDIR)/%.c
+	$(CC) $(CFLAGS) $(INC) $(DEF) -c -o $@ $<
+
+$(A): $(O)
+	$(AR) $@ $^
+	$(RANLIB) $@
+
+$(OUT): $(O)
+	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(STRIP) $@
+
+clean:
+	$(RMDIR) $(ODIR)

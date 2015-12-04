@@ -1,0 +1,48 @@
+COMPILER = cl
+LINKER = link
+DEFINES = /DSTANDALONE
+OBJECT_FLAGS = /O2 /EHsc
+DSTDIR = win32_release
+SRCDIR = src
+INCLUDES = /I enet\include /I include
+LIBS = /LIBPATH:lib /DEFAULTLIB:zdll /DEFAULTLIB:enet /DEFAULTLIB:winmm /DEFAULTLIB:ws2_32  /DEFAULTLIB:advapi32 /DEFAULTLIB:dbghelp /DEFAULTLIB:lua5.1.lib
+LANES_SRCDIR = src\lanes\src
+LANES_DEFINES = /D_GNU_SOURCE -DNDEBUG
+LANES_INCLUDES = /I src\lua
+
+
+TARGET = $(DSTDIR)\ac_server.exe
+
+OBJECTS = $(DSTDIR)\crypto.o \
+          $(DSTDIR)\log.o \
+          $(DSTDIR)\protocol.o \
+          $(DSTDIR)\serverms.o \
+          $(DSTDIR)\server.o \
+          $(DSTDIR)\stream.o \
+          $(DSTDIR)\tools.o \
+          $(DSTDIR)\wizard.o \
+          $(DSTDIR)\lua.o \
+          $(DSTDIR)\lua_tmr_library.o \
+          $(DSTDIR)\lua_cfg_library.o
+
+LANES_OBJECTS = $(DSTDIR)\lanes_lanes.o \
+          $(DSTDIR)\threading_lanes.o \
+          $(DSTDIR)\keeper_lanes.o \
+          $(DSTDIR)\tools_lanes.o
+
+all: make_DSTDIR $(TARGET)
+
+$(LANES_OBJECTS):
+	$(COMPILER) /c $(OBJECT_FLAGS) $(LANES_DEFINES) $(LANES_INCLUDES) /Fo$@ $(LANES_SRCDIR)\$(@F:_lanes.o=.cpp)
+
+$(OBJECTS):
+	$(COMPILER) /c $(OBJECT_FLAGS) $(DEFINES) $(INCLUDES) /Fo$@ $(SRCDIR)\$(@F:.o=.cpp)
+
+$(TARGET): $(OBJECTS) $(LANES_OBJECTS)
+	$(LINKER) /OUT:$(TARGET) $(OBJECTS) $(LANES_OBJECTS) $(LIBS)
+
+make_DSTDIR:
+	mkdir $(DSTDIR)
+
+clean:
+	del $(OBJECTS) $(LANES_OBJECTS) $(TARGET)
