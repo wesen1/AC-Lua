@@ -1,2 +1,5 @@
 server_out/
 *.o
+/enet/config.log
+/enet/config.status
+/enet/Makefile
