@@ -2,6 +2,6 @@ cd enet
 ./configure
 make
 cd ../lua
-make linux
+make linux install
 cd ..
 make linux
