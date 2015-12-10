@@ -2,4 +2,6 @@ server_out/
 *.o
 /enet/config.log
 /enet/config.status
+/enet/libtool
+/enet/libenet.pc
 /enet/Makefile

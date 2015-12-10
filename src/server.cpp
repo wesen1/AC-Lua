@@ -12,6 +12,10 @@
 // 2011feb05:ft: quitproc
 #include "signal.h"
 
+// for some reason teamnames only work if they're defined here and not in server.h.cpp
+const char *teamnames[TEAM_NUM+1] = {"CLA", "RVSF", "CLA-SPECT", "RVSF-SPECT", "SPECTATOR", "void"};
+const char *teamnames_s[TEAM_NUM+1] = {"CLA", "RVSF", "CSPC", "RSPC", "SPEC", "void"};
+
 #include "lua.h"
 static string lua_scripts_path = LUA_SCRIPTS_PATH;
 int server_protocol_version = SERVER_PROTOCOL_VERSION;
