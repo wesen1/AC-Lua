@@ -5,3 +5,6 @@ server_out/
 /enet/libtool
 /enet/libenet.pc
 /enet/Makefile
+/lua/src/liblua.a
+/lib/lua51.dll
+/lib/liblua.a
