@@ -11,8 +11,8 @@ RMDIR /s /q server_out
 ECHO Building Lua...
 cd lua
 mingw32-make mingw
-copy src/liblua.a ../lib/
-copy src/lua51.dll ../lib/
+copy /B /Y .\src\liblua.a .\..\lib\liblua.a
+copy /B /Y .\src\lua51.dll .\..\lib\lua51.dll
 cd ..
 
 ECHO Building AssaultCube server

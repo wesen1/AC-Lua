@@ -122,7 +122,13 @@ extern void Lua_endVote( int result );
 
 extern voteinfo *curvote;
 extern int server_protocol_version;
-extern struct sflaginfo { int state, actor_cn; } sflaginfos[2];
+extern struct sflaginfo { 
+    int state, actor_cn; 
+    float pos[3];
+    int lastupdate;
+    int stolentime;
+    short x, y; 
+} sflaginfos[2];
 extern vector<client*> clients;
 extern int gamemillis, servmillis, gamelimit;
 extern string servdesc_current;
@@ -2649,7 +2655,7 @@ LUA_FUNCTION (logline)
 {
 	lua_checkstack( L, 2 );
 	if ( !lua_isnumber( L, 1 ) || !lua_isstring( L, 2 ) ) return 0;
-	logline( lua_tonumber( L, 1 ), lua_tostring( L, 2 ) );
+	logline( lua_tonumber( L, 1 ), "%s", lua_tostring( L, 2 ) );
 	return 0;
 }
 
