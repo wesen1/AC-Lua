@@ -216,6 +216,7 @@ void flushmasterinput(int m)
 extern char *global_name;
 extern int interm;
 extern int totalclients;
+extern bool disable_maxcllimit;
 
 // send alive signal to masterserver after 40 minutes of uptime and if currently in intermission (so theoretically <= 1 hour)
 // TODO?: implement a thread to drop this "only in intermission" business, we'll need it once AUTH gets active!
@@ -281,7 +282,7 @@ void serverms(int m, int mode, int numplayers, int minremain, char *smapname, in
             (*mnum)++; *mrec += len; std = true;
             putint(po, protocol_version);
             putint(po, mode);
-            numplayers = ( numplayers < MAXCL ) ? numplayers : ( MAXCL - 1 );
+            if (disable_maxcllimit) numplayers = ( numplayers < MAXCL ) ? numplayers : ( MAXCL - 1 );
             double *var = ( double* ) Lua::getFakeVariable( LUA_YIELD_NUMBER_OF_PLAYERS, NULL, LUA_TNUMBER, "i", numplayers );
             if ( var != NULL )
             {

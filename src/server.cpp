@@ -20,6 +20,7 @@ const char *teamnames_s[TEAM_NUM+1] = {"CLA", "RVSF", "CSPC", "RSPC", "SPEC", "v
 static string lua_scripts_path = LUA_SCRIPTS_PATH;
 int server_protocol_version = SERVER_PROTOCOL_VERSION;
 bool hitreg_fixed = true;
+bool disable_maxcllimit = false;
 int intermission_check_shear = 0;
 int framemillis = 0;
 
@@ -4615,6 +4616,7 @@ int main(int argc, char **argv)
         if (!strncmp(argv[i],"--wizard",8)) return wizardmain(argc, argv);
         else if (!strncmp(argv[i],"--lua",5) && i+1 < argc) copystring( lua_scripts_path, argv[i+1] );
         else if (!strncmp(argv[i],"--no-hitreg-fix",15)) hitreg_fixed = false;
+        else if (!strncmp(argv[i], "--no-maxcllimit", 15)) disable_maxcllimit = true;
     }
 
     if(enet_initialize()<0) fatal("Unable to initialise network module");
