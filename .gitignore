@@ -1,10 +1,17 @@
 server_out/
 *.o
+*.lo
+*.la
+/enet/.libs/
 /enet/config.log
 /enet/config.status
 /enet/libtool
 /enet/libenet.pc
 /enet/Makefile
 /lua/src/liblua.a
+/lua/src/lua
+/lua/src/luac
 /lib/lua51.dll
 /lib/liblua.a
+/linux_release/
+
