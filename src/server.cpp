@@ -3701,6 +3701,7 @@ void process(ENetPacket *packet, int sender, int chan)
                             {
                                 strcpy(vi->text,c->mapname);
                                 mode = vi->num1 = c->mode;
+                                time = vi->num2 = c->time;
                             }
                             else fatal("unable to get next map in maprot");
                         }
