@@ -74,6 +74,7 @@ extern void sendteamtext( char*, int, int );
 extern void sendvoicecomteam( int, int );
 extern void rereadcfgs( bool fromLua = true );
 extern int clienthasflag( int );
+extern int spawntime( int type );
 
 
 struct pwddetail
@@ -694,6 +695,7 @@ void Lua::registerGlobals( lua_State *L )
 	LUA_SET_FUNCTION (getlastsaytext);
 	LUA_SET_FUNCTION (authclient);
 	LUA_SET_FUNCTION (isauthed);
+	LUA_SET_FUNCTION (spawntime);
 }
 
 static LuaArg* prepareArgs( const char *arguments, va_list vl, int &argc )
@@ -3406,5 +3408,16 @@ LUA_FUNCTION (isauthed)
 	lua_pushboolean( L, clients[player_cn]->isauthed );
 	return 1;
 }
+
+LUA_FUNCTION (spawntime)
+{
+	lua_checkstack( L, 1 );
+	if ( !lua_isnumber( L, 1 ) ) return 0;
+	int item_type = (int) lua_tonumber( L, 1 );
+
+	lua_pushnumber( L, spawntime(item_type) );
+	return 1;
+}
+
 
 //END Lua global functions

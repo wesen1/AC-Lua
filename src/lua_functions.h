@@ -196,4 +196,5 @@ static LUA_FUNCTION (checkgban); // (string ip)
 static LUA_FUNCTION (callhandler); // (string handler, ...)
 static LUA_FUNCTION (getwaterlevel); // (string mapname = current map)
 static LUA_FUNCTION (callgenerator); // (string handler, ...)
+static LUA_FUNCTION (spawntime); // (string item_type)
 //END server
