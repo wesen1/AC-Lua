@@ -2026,13 +2026,34 @@ LUA_FUNCTION (getmapitems)
 
 LUA_FUNCTION (spawnitem)
 {
-	lua_checkstack( L, 1 );
+	lua_checkstack( L, 2 );
 	if ( !lua_isnumber( L, 1 ) ) return 0;
 	int item_id = (int) lua_tonumber( L, 1 );
 	if ( !sents.inrange( item_id ) ) return 0;
 	sents[item_id].spawntime = 0;
 	sents[item_id].spawned = true;
-	sendf( -1, 1, "ri2", SV_ITEMSPAWN, item_id );
+
+	vector<int> receiver_client_numbers;
+	if ( lua_istable(L, 2))
+	{
+		int n = luaL_getn( L, 2 );
+		for ( int i = 1; i <= n; i++ )
+		{
+			lua_pushinteger( L, i );
+			lua_gettable( L, 2 );
+			receiver_client_numbers.add((int) lua_tonumber( L, lua_gettop( L ) ));
+		}
+	}
+	else
+	{ // Default value: -1 = all connected clients
+		receiver_client_numbers.add(-1);
+	}
+
+	loopv(receiver_client_numbers)
+	{
+		sendf( receiver_client_numbers[i], 1, "ri2", SV_ITEMSPAWN, item_id );
+	}
+
 	return 0;
 }
 
