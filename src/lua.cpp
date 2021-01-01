@@ -1401,7 +1401,7 @@ LUA_FUNCTION (getnextprimary)
 	if ( !lua_isnumber( L, 1 ) ) return 0;
 	int player_cn = (int) lua_tonumber( L, 1 );
 	if ( !valid_client( player_cn ) ) return 0;
-	lua_pushinteger( L, clients[player_cn]->state.primary );
+	lua_pushinteger( L, clients[player_cn]->state.nextprimary );
 	return 1;
 }
 
