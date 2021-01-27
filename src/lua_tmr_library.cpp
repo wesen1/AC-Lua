@@ -218,52 +218,66 @@ static int tmr_remove (lua_State *L)
 	return 0;
 }
 
+
+/**
+ * Comparison function for qsort() which sorts timer ID's ascending.
+ *
+ * @param int _timerIdA The first timer ID
+ * @param int _timerIdB The second timer ID
+ *
+ * @return int The comparison status (> 0: A is higher than B, = 0: A equals B, < 0: B is higher than A)
+ */
+int compareTimerIds(const void * _timerIdA, const void * _timerIdB)
+{
+   return ( *(int*)_timerIdA - *(int*)_timerIdB );
+}
+
 static int tmr_vacantid (lua_State *L)
 {
-	for ( int i = 0; i < numberOfTimers; i++ )
+	// Find the total number of reserved timer IDs
+	int numberOfTimersToCreate = 0;
+	for (TimerToCreate *tmrs = timersToCreate; tmrs != NULL; tmrs = tmrs->next)
 	{
-		int p = timers[i].id - 1, n = p + 2;
-		int pm = 0, nm = 0;
-		for ( int j = i + 1; j < numberOfTimers; j++ )
-		{
-			if ( p == timers[j].id ) pm++;
-			if ( n == timers[j].id ) nm++;
-		}
-		for ( TimerToCreate *tmrs = timersToCreate; tmrs != NULL; tmrs = tmrs->next )
-		{
-			if ( p == tmrs->timer.id ) pm++;
-			if ( n == tmrs->timer.id ) nm++;
-		}
-		if ( nm == 0 ) {
-			lua_pushnumber( L, n );
-			return 1;
-		}
-		if ( pm == 0 ) {
-			lua_pushnumber( L, p );
+		numberOfTimersToCreate++;
+	}
+
+	int totalNumberOfReservedTimerIds = numberOfTimers + numberOfTimersToCreate;
+	if (totalNumberOfReservedTimerIds == 0)
+	{ // No IDs reserved yet, start with 0
+		lua_pushnumber( L, 0 );
+		return 1;
+	}
+
+
+	// Find all reserved timer IDs
+	int reservedTimerIds[totalNumberOfReservedTimerIds];
+	for (int i = 0; i < numberOfTimers; i++)
+	{
+		reservedTimerIds[i] = timers[i].id;
+	}
+
+	int nextIndex = numberOfTimers - 1;
+	for (TimerToCreate *tmrs = timersToCreate; tmrs != NULL; tmrs = tmrs->next)
+	{
+		nextIndex++;
+		reservedTimerIds[nextIndex] = tmrs->timer.id;
+	}
+
+	// Sort the reserved timer IDs
+	qsort(reservedTimerIds, totalNumberOfReservedTimerIds, sizeof(int), compareTimerIds);
+
+	// Check if there is a gap between the current reserved timer IDs
+	for (int i = 1; i < totalNumberOfReservedTimerIds; i++)
+	{
+		if (reservedTimerIds[i] - 1 != reservedTimerIds[i - 1])
+		{ // The previous reserved timer ID is more than 1 lower than the one at the current index
+			lua_pushnumber(L, reservedTimerIds[i] - 1);
 			return 1;
 		}
 	}
 
-	for ( TimerToCreate *tmrs = timersToCreate; tmrs != NULL; tmrs = tmrs->next )
-	{
-		int p = tmrs->timer.id - 1, n = p + 2;
-		int pm = 0, nm = 0;
-		for ( TimerToCreate *tmrs2 = tmrs; tmrs2 != NULL; tmrs2 = tmrs2->next )
-		{
-			if ( p == tmrs2->timer.id ) pm++;
-			if ( n == tmrs2->timer.id ) nm++;
-		}
-		if ( nm == 0 ) {
-			lua_pushnumber( L, n );
-			return 1;
-		}
-		if ( pm == 0 ) {
-			lua_pushnumber( L, p );
-			return 1;
-		}
-	}
-
-	lua_pushnumber( L, 0 );
+	// No gaps found between the timer IDs, use the next higher ID
+	lua_pushnumber(L, reservedTimerIds[totalNumberOfReservedTimerIds - 1] + 1);
 	return 1;
 }
 
