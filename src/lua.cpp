@@ -610,6 +610,7 @@ void Lua::registerGlobals( lua_State *L )
 	LUA_SET_FUNCTION (getadminpwds);
 	LUA_SET_FUNCTION (getwholemaprot);
 	LUA_SET_FUNCTION (setwholemaprot);
+	LUA_SET_FUNCTION (addmaprotentry);
 	LUA_SET_FUNCTION (getwholebl);
 	LUA_SET_FUNCTION (setwholebl);
 	LUA_SET_FUNCTION (strtoiprange);
@@ -2202,6 +2203,54 @@ LUA_FUNCTION (getwholemaprot)
 	return 1;
 }
 
+
+/**
+ * Converts a lua table to a configset that can be added to the active map rotation.
+ *
+ * @param lua_State L The Lua state to fetch the lua table from
+ * @param int table The stack index of the lua table that should be fetched
+ *
+ * @return configset The generated configset
+ */
+configset convertLuaMapRotEntryToConfigSet(lua_State *L, int table)
+{
+	configset cs;
+
+	lua_getfield( L, table, "map" );
+	copystring( cs.mapname, lua_tostring( L, lua_gettop( L ) ) );
+
+	lua_getfield( L, table, "mode" );
+	cs.mode = (int) lua_tonumber( L, lua_gettop( L ) );
+
+	lua_getfield( L, table, "time" );
+	cs.time = (int) lua_tonumber( L, lua_gettop( L ) );
+
+	lua_getfield( L, table, "allowVote" );
+	if ( lua_isnumber( L, lua_gettop( L ) ) )
+		cs.vote = (int) lua_tonumber( L, lua_gettop( L ) );
+	else cs.vote = 1;
+
+	lua_getfield( L, table, "minplayer" );
+	if ( lua_isnumber( L, lua_gettop( L ) ) )
+		cs.minplayer = (int) lua_tonumber( L, lua_gettop( L ) );
+	else cs.minplayer = 0;
+
+	lua_getfield( L, table, "maxplayer" );
+	if ( lua_isnumber( L, lua_gettop( L ) ) )
+		cs.maxplayer = (int) lua_tonumber( L, lua_gettop( L ) );
+	else cs.maxplayer = 0;
+
+	lua_getfield( L, table, "skiplines" );
+	if ( lua_isnumber( L, lua_gettop( L ) ) )
+		cs.skiplines = (int) lua_tonumber( L, lua_gettop( L ) );
+	else cs.skiplines = 0;
+
+	lua_pop( L, 7 ); // the values
+	lua_pop( L, 1 ); // the table
+
+	return cs;
+}
+
 LUA_FUNCTION (setwholemaprot)
 {
 	lua_checkstack( L, 1 );
@@ -2210,46 +2259,27 @@ LUA_FUNCTION (setwholemaprot)
 	int n = luaL_getn( L, 1 );
 	for ( int i = 1; i <= n; i++ )
 	{
-		configset cs;
 		lua_pushinteger( L, i );
 		lua_gettable( L, 1 );
 		int table = lua_gettop( L );
 
-		lua_getfield( L, table, "map" );
-		copystring( cs.mapname, lua_tostring( L, lua_gettop( L ) ) );
-
-		lua_getfield( L, table, "mode" );
-		cs.mode = (int) lua_tonumber( L, lua_gettop( L ) );
-
-		lua_getfield( L, table, "time" );
-		cs.time = (int) lua_tonumber( L, lua_gettop( L ) );
-
-		lua_getfield( L, table, "allowVote" );
-		if ( lua_isnumber( L, lua_gettop( L ) ) )
-			cs.vote = (int) lua_tonumber( L, lua_gettop( L ) );
-		else cs.vote = 1;
-
-		lua_getfield( L, table, "minplayer" );
-		if ( lua_isnumber( L, lua_gettop( L ) ) )
-			cs.minplayer = (int) lua_tonumber( L, lua_gettop( L ) );
-		else cs.minplayer = 0;
-
-		lua_getfield( L, table, "maxplayer" );
-		if ( lua_isnumber( L, lua_gettop( L ) ) )
-			cs.maxplayer = (int) lua_tonumber( L, lua_gettop( L ) );
-		else cs.maxplayer = 0;
-
-		lua_getfield( L, table, "skiplines" );
-		if ( lua_isnumber( L, lua_gettop( L ) ) )
-			cs.skiplines = (int) lua_tonumber( L, lua_gettop( L ) );
-		else cs.skiplines = 0;
-
-		lua_pop( L, 7 ); // the values
-		lua_pop( L, 1 ); // the table
+		configset cs = convertLuaMapRotEntryToConfigSet(L, table);
 		maprot.configsets.add( cs );
 	}
 	return 0;
 }
+
+LUA_FUNCTION (addmaprotentry)
+{
+	lua_checkstack( L, 1 );
+	if ( !lua_istable( L, 1 ) ) return 0;
+
+	configset cs = convertLuaMapRotEntryToConfigSet(L, 1);
+	maprot.configsets.add( cs );
+
+	return 0;
+}
+
 
 LUA_FUNCTION (getwholebl)
 {
