@@ -47,6 +47,7 @@ struct entity : persistent_entity
 
 enum { GUN_KNIFE = 0, GUN_PISTOL, GUN_CARBINE, GUN_SHOTGUN, GUN_SUBGUN, GUN_SNIPER, GUN_ASSAULT, GUN_CPISTOL, GUN_GRENADE, GUN_AKIMBO, NUMGUNS };
 #define reloadable_gun(g) (g != GUN_KNIFE && g != GUN_GRENADE)
+#define valid_weapon(g) (g >= GUN_KNIFE && g < NUMGUNS && g != GUN_CPISTOL)
 
 #define SGRAYS 21
 #define SGDMGTOTAL 90
