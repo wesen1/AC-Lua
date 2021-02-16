@@ -3173,7 +3173,7 @@ void process(ENetPacket *packet, int sender, int chan)
                     if(servmillis - cl->lastprofileupdate < 1000)
                     {
                         ++cl->fastprofileupdates;
-                        if(cl->fastprofileupdates == 3) sendservmsg("\f3Please do not spam");
+                        if(cl->fastprofileupdates == 3) sendservmsg("\f3Please do not spam", sender);
                         if(cl->fastprofileupdates >= 5) { disconnect_client(sender, DISC_ABUSE); break; }
                     }
                     else if(servmillis - cl->lastprofileupdate > 10000) cl->fastprofileupdates = 0;
@@ -3217,7 +3217,7 @@ void process(ENetPacket *packet, int sender, int chan)
                 if(servmillis - cl->lastprofileupdate < 1000)
                 {
                     ++cl->fastprofileupdates;
-                    if(cl->fastprofileupdates == 3) sendservmsg("\f3Please do not spam");
+                    if(cl->fastprofileupdates == 3) sendservmsg("\f3Please do not spam", sender);
                     if(cl->fastprofileupdates >= 5) disconnect_client(sender, DISC_ABUSE);
                 }
                 else if(servmillis - cl->lastprofileupdate > 10000) cl->fastprofileupdates = 0;
