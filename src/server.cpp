@@ -2810,7 +2810,8 @@ void process(ENetPacket *packet, int sender, int chan)
             getstring(text, p);
             filterlang(cl->lang, text);
             int wantrole = getint(p);
-            cl->state.nextprimary = getint(p);
+            int nextprimary = getint(p);
+            cl->state.nextprimary = valid_weapon(nextprimary) ? nextprimary : GUN_ASSAULT;
             loopi(2) cl->skin[i] = getint(p);
             Lua::callHandler( LUA_ON_PLAYER_PRECONNECT, "i", sender );
             int bantype = getbantype(sender);
@@ -3147,7 +3148,7 @@ void process(ENetPacket *packet, int sender, int chan)
             case SV_PRIMARYWEAP:
             {
                 int nextprimary = getint(p);
-                if(nextprimary<0 && nextprimary>=NUMGUNS) break;
+                if (!valid_weapon(nextprimary)) break;
                 cl->state.nextprimary = nextprimary;
                 break;
             }
